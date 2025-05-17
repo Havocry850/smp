@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CareerBuddy - Dashboard</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(rgba(144, 214, 238, 0.7), rgba(144, 238, 236, 0.7)),
+        url('https://img.freepik.com/premium-vector/career-word-cloud-template-success-work-concept-vector-tagcloud-background_616200-7334.jpg?size=626&ext=jpg') no-repeat center center/cover;
+      overflow: hidden;
+      color: white;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 190px;
+      height: 100%;
+      background-color: rgba(0, 238, 255, 0.116);
+      box-shadow: 2px 0 5px rgba(0, 221, 255, 0.2);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      padding-top: 20px;
+      padding-left: 20px;
+      padding-right: 20px;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .sidebar .logo-container {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .sidebar .logo-container img {
+      width: 80%;
+      max-width: 120px;
+      height: auto;
+    }
+
+    .sidebar .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      text-align: center;
+      color: #1500ff;
+      margin-bottom: 30px;
+    }
+
+    .sidebar a {
+      width: 100%;
+      display: block;
+      color: rgb(255, 255, 255);
+      padding: 15px 20px;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: background 0.3s;
+      text-align: left;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+
+    .sidebar a:hover {
+      background-color: rgb(255, 255, 255);
+    }
+
+    /* Header */
+    .top-header {
+      position: fixed;
+      top: 0;
+      left: 230px;
+      width: calc(100% - 230px);
+      height: 100px;
+      background-color: #00d9ff1a;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0 20px;
+      z-index: 999;
+      color: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.364);
+    }
+
+    .header-search input {
+      padding: 15px;
+      width: 400px;
+      height: 20px;
+      border-radius: 25px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      margin-right: 10px;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 210px;
+      padding: 120px 30px 30px 30px;
+      height: calc(100vh - 60px);
+      overflow-y: auto;
+      display: none; /* Hide all content initially */
+    }
+
+    .main-content h2 {
+      font-size: 2.5rem;
+      color: #002833;
+      text-shadow: 1px 1px 5px rgba(255, 255, 255, 0.3);
+    }
+
+    .main-content p {
+      font-size: 1.2rem;
+      color: white;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    }
+
+    .profile-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .profile-box {
+      background-color: rgba(0, 88, 100, 0.5);
+      padding: 20px;
+      border-radius: 10px;
+      flex: 1;
+      min-width: 300px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .profile-box h3 {
+      color: #ffffff;
+      margin-bottom: 15px;
+    }
+
+    .profile-box p {
+      font-size: 1rem;
+      margin: 8px 0;
+      color: #ffffff;
+    }
+
+    .interest-item {
+    background-color: rgba(0, 50, 0, 0.4);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    line-height: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+    min-width: 140px; /* controls width grouping */
+    max-width: 180px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    }
+
+    .interest-item:hover {
+      background-color: rgba(0, 100, 100, 0.6);
+    }
+
+    .interest-item.selected {
+      background-color: #006366;
+      transform: scale(1.05);
+    }
+
+
+    /* Dark Mode */
+    body.dark-mode { 
+      background: #121212;
+      color: #e0e0e0;
+    }
+
+    body.dark-mode .sidebar {
+      background-color: #1e1e1e;
+    }
+
+    body.dark-mode .top-header {
+      background-color: #1e1e1e;
+    }
+
+    body.dark-mode .main-content h2 {
+      color: #90ebee;
+    }
+
+    body.dark-mode .profile-box {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: #90daee;
+    }
+
+    body.dark-mode .profile-box input {
+      background-color: #333;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo-container">
+      <img src="https://cdn.shortpixel.ai/client/q_lossless,ret_img,w_2735/https://www.bitext.com/wp-content/uploads/2019/01/bot-automation-234tdgf.png" alt="CareerBuddy Logo"/>
+    </div>
+    <div class="logo">CareerBuddy</div>
+    <a href="#" onclick="showContent('dashboard')">Dashboard</a>
+    <a href="#" onclick="showContent('profile')">My Profile</a>
+    <a href="#" onclick="showContent('careers')">Explore Careers</a>
+    <a href="#" onclick="showContent('assessment')">Skill Assessment</a>
+    <a href="#" onclick="showContent('interest')">Interest</a>
+    <a href="#" onclick="showContent('result')">Result</a>
+    <a href="#" onclick="showContent('ratings')">Ratings</a>
+    <a href="#" onclick="showContent('notification')">Notification</a>
+    <a href="#" onclick="showContent('problem')">Report a problem</a>
+    <a href="#" onclick="showContent('feedback')">Feedback</a>
+    <a href="#" onclick="showContent('settings')">Settings</a>
+    <a href="#">Log Out</a>
+  </div>
+
+  <!-- Header -->
+  <header class="top-header">
+    <div class="header-search">
+      <input type="text" placeholder="Search..." />
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div id="dashboard" class="main-content">
+    <h2>Dashboard</h2>
+    <p>Welcome to your CareerBuddy Dashboard!</p>
+  </div>
+
+  <div id="profile" class="main-content">
+    <h2>My Profile</h2>
+    <p>This section will automatically update when you start using CareerBuddy.</p>
+    <div class="profile-container">
+      <div class="profile-box">
+        <h3>Basic Information</h3>
+        <p><strong>Name:</strong> <span id="profile-name">—</span></p>
+        <p><strong>Age:</strong> <span id="profile-age">—</span></p>
+        <p><strong>Gender:</strong> <span id="profile-gender">—</span></p>
+        <p><strong>Course:</strong> <span id="profile-course">—</span></p>
+      </div>
+      <div class="profile-box">
+        <h3>Assessment Summary</h3>
+        <p><strong>Interest Level:</strong> <span id="profile-interest">—</span></p>
+        <p><strong>Skill Score:</strong> <span id="profile-skill">—</span></p>
+        <p><strong>Improvement Rating:</strong> <span id="profile-improvement">—</span></p>
+        <p><strong>Overall Rating:</strong> <span id="profile-overall">—</span></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="careers" class="main-content">
+    <h2>Explore Careers</h2>
+    <p>Based on your skill and interest assessments, here are some career options that may interest you:</p>
+    <div class="profile-container">
+      <div class="profile-box">
+        <h3>Software Engineer</h3>
+        <p><strong>Skills Needed:</strong> Programming, Problem-solving, Teamwork</p>
+        <p><strong>Potential Growth:</strong> High</p>
+      </div>
+      <div class="profile-box">
+        <h3>Data Analyst</h3>
+        <p><strong>Skills Needed:</strong> Data Analysis, Excel, SQL</p>
+        <p><strong>Potential Growth:</strong> Medium</p>
+      </div>
+      <div class="profile-box">
+        <h3>Digital Marketer</h3>
+        <p><strong>Skills Needed:</strong> SEO, Content Creation, Analytics</p>
+        <p><strong>Potential Growth:</strong> Medium</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+// Interest Selection
+let selectedInterests = [];
+
+document.addEventListener("DOMContentLoaded", () => {
+  const items = document.querySelectorAll('.interest-item');
+
+  items.forEach(item => {
+    item.addEventListener('click', () => {
+      const interest = item.getAttribute('data-interest');
+
+      if (selectedInterests.includes(interest)) {
+        selectedInterests = selectedInterests.filter(i => i !== interest);
+        item.classList.remove('selected');
+      } else {
+        if (selectedInterests.length < 3) {
+          selectedInterests.push(interest);
+          item.classList.add('selected');
+        } else {
+          alert("You can only select up to 3 interests.");
+        }
+      }
+    });
+  });
+
+  document.getElementById("submitInterest").addEventListener("click", () => {
+    if (selectedInterests.length === 0) {
+      alert("Please select at least one interest.");
+    } else {
+      localStorage.setItem("userInterests", JSON.stringify(selectedInterests));
+    }
+  });
+});
+
+
+    // Function to show content based on sidebar selection
+    function showContent(section) {
+      const allSections = document.querySelectorAll('.main-content');
+      allSections.forEach(sec => sec.style.display = 'none'); // Hide all sections
+
+      // Show the selected section
+      document.getElementById(section).style.display = 'block';
+    }
+
+    // Initialize with showing the dashboard by default
+    document.addEventListener("DOMContentLoaded", function () {
+      showContent('dashboard');
+    });
+
+    // Dark Mode toggle functionality
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    }
+
+    // Apply saved dark mode setting on page load
+    document.addEventListener("DOMContentLoaded", function () {
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+      }
+    });
+  </script>
+
+<!-- NOTE: Below is the continuation/addition to your current CareerBuddy HTML -->
+
+<!-- Skill Assessment Section -->
+<div id="assessment" class="main-content">
+  <h2>Skill Assessment</h2>
+  <p>Take short assessments to evaluate your technical and soft skills.</p>
+
+  <button id="startAssessmentBtn">Start Assessment</button>
+
+  <div id="questionsContainer" style="margin-top:20px; display:none;">
+    <form id="quizForm">
+      <div class="question">
+        <p>1. Which language is most commonly used for web development?</p>
+        <label><input type="radio" name="q1" value="correct" /> HTML</label>
+        <label><input type="radio" name="q1" value="wrong" /> Python</label>
+        <label><input type="radio" name="q1" value="wrong" /> Java</label>
+      </div>
+
+      <div class="question">
+        <p>2. What is the capital of the Philippines?</p>
+        <label><input type="radio" name="q2" value="wrong" /> Cebu</label>
+        <label><input type="radio" name="q2" value="correct" /> Manila</label>
+        <label><input type="radio" name="q2" value="wrong" /> Davao</label>
+      </div>
+
+      <div class="question">
+        <p>3. Which one is a soft skill?</p>
+        <label><input type="radio" name="q3" value="correct" /> Communication</label>
+        <label><input type="radio" name="q3" value="wrong" /> JavaScript</label>
+        <label><input type="radio" name="q3" value="wrong" /> Excel</label>
+      </div>
+
+      <button type="button" id="submitSkill">Submit</button>
+    </form>
+
+    <div id="scoreDisplay" style="margin-top: 15px; font-weight: bold; color: #003300;"></div>
+  </div>
+</div>
+
+<script>
+ document.getElementById('submitSkill').addEventListener('click', () => {
+  const form = document.getElementById('quizForm');
+  const totalQuestions = 3;
+  let correctAnswers = 0;
+
+  for (let i = 1; i <= totalQuestions; i++) {
+    const radios = form.elements['q' + i];
+    for (const radio of radios) {
+      if (radio.checked && radio.value === 'correct') {
+        correctAnswers++;
+      }
+    }
+  }
+
+  // Display fraction score
+  document.getElementById('scoreDisplay').textContent = `Your score is: ${correctAnswers} / ${totalQuestions}`;
+
+  // Calculate percentage for ratings circles
+  const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+
+  ratingsData.skillAssessment = percentage;
+  updateRatings();
+});
+</script>
+
+<!-- Interest Section -->
+<div id="interest" class="main-content" style="display:none;">
+  <h2>Select Your Top 3 Interests</h2>
+  <div class="interests-grid" style="
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 30px;
+      max-height: 350px; 
+      overflow-y: auto;
+      padding: 10px;
+    ">
+    <div class="interest-item" data-interest="Traveling and exploring new cultures">Traveling and exploring new cultures</div>
+    <div class="interest-item" data-interest="Photography">Photography</div>
+    <div class="interest-item" data-interest="Photo Editing">Photo Editing</div>
+    <div class="interest-item" data-interest="Playing musical instrument">Playing musical instrument</div>
+    <div class="interest-item" data-interest="Game Development">Game Development</div>
+    <div class="interest-item" data-interest="Exploring new technologies">Exploring new technologies</div>
+    <div class="interest-item" data-interest="Coding">Coding</div>
+    <div class="interest-item" data-interest="Graphic Design">Graphic Design</div>
+    <div class="interest-item" data-interest="Animation">Animation</div>
+    <div class="interest-item" data-interest="Video Editing">Video Editing</div>
+    <div class="interest-item" data-interest="Fashion Styling">Fashion Styling</div>
+    <div class="interest-item" data-interest="Researching">Researching</div>
+    <div class="interest-item" data-interest="Debating">Debating</div>
+    <div class="interest-item" data-interest="Public Speaking">Public Speaking</div>
+    <div class="interest-item" data-interest="Basketball">Basketball</div>
+    <div class="interest-item" data-interest="Volleyball">Volleyball</div>
+    <div class="interest-item" data-interest="Badminton">Badminton</div>
+    <div class="interest-item" data-interest="Fitness">Fitness</div>
+    <div class="interest-item" data-interest="Gym Workout">Gym Workout</div>
+    <div class="interest-item" data-interest="Martial Arts">Martial Arts</div>
+    <div class="interest-item" data-interest="Hiking">Hiking</div>
+  </div>
+
+  <button id="submitInterest">Submit</button>
+</div>
+
+<!-- Result Section -->
+<div id="result" class="main-content" style="display:none; padding-top: 60px;">
+  <h2>Your Results</h2>
+  <div id="resultContent" style="color: white; font-size: 1.2rem;"></div>
+</div>
+
+<script>
+  // Show the questions when Start Assessment button clicked
+  document.getElementById('startAssessmentBtn').addEventListener('click', () => {
+    document.getElementById('startAssessmentBtn').style.display = 'none';
+    document.getElementById('questionsContainer').style.display = 'block';
+  });
+
+  // Toggle interest item selection on click, limit max 3 selections
+  // Toggle interest item selection on click (no limit, no alert)
+  document.querySelectorAll('.interest-item').forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('selected');
+    });
+  });
+
+  // Skill Assessment submit handler
+  document.getElementById('submitSkill').addEventListener('click', () => {
+    const q1 = document.querySelector('input[name="q1"]:checked');
+    const q2 = document.querySelector('input[name="q2"]:checked');
+    const q3 = document.querySelector('input[name="q3"]:checked');
+
+    if (!q1 || !q2 || !q3) {
+      alert("Please answer all questions!");
+      return;
+    }
+
+    let score = 0;
+    if (q1.value === 'correct') score++;
+    if (q2.value === 'correct') score++;
+    if (q3.value === 'correct') score++;
+
+    let suitableJob = '';
+    let recommendedJobs = [];
+
+    if (score >= 3) {
+      suitableJob = "Web Developer";
+      recommendedJobs = ["Frontend Developer", "Backend Developer", "Fullstack Developer"];
+    } else if (score === 2) {
+      suitableJob = "Junior Developer";
+      recommendedJobs = ["QA Tester", "Technical Support"];
+    } else {
+      suitableJob = "Customer Service";
+      recommendedJobs = ["Receptionist", "Data Entry"];
+    }
+
+    localStorage.setItem("skillSuitableJob", suitableJob);
+    localStorage.setItem("skillRecommendedJobs", JSON.stringify(recommendedJobs));
+
+    // Show interest section, hide assessment
+    document.getElementById('assessment').style.display = 'none';
+    document.getElementById('interest').style.display = 'block';
+  });
+
+  // Interest submit handler
+  document.getElementById('submitInterest').addEventListener('click', () => {
+    const selectedInterests = [...document.querySelectorAll('.interest-item.selected')].map(el => el.dataset.interest);
+
+    if(selectedInterests.length === 0){
+      alert("Please select at least one interest!");
+      return;
+    }
+
+    let interestJobs = [];
+
+    if (selectedInterests.includes("Coding")) {
+      interestJobs.push("Software Developer", "Game Developer");
+    }
+    if (selectedInterests.includes("Photography")) {
+      interestJobs.push("Photographer", "Photo Editor");
+    }
+    // Add more mappings as needed
+
+    localStorage.setItem("interestJobs", JSON.stringify(interestJobs));
+
+    showResults();
+  });
+
+  // Show combined results function
+  function showResults() {
+    const skillJob = localStorage.getItem("skillSuitableJob");
+    const skillRec = JSON.parse(localStorage.getItem("skillRecommendedJobs")) || [];
+    const interestJobs = JSON.parse(localStorage.getItem("interestJobs")) || [];
+
+    if (!skillJob && interestJobs.length === 0) {
+      alert("Please complete the assessments to see your results.");
+      return;
+    }
+
+    const combinedRecommended = [...new Set([...skillRec, ...interestJobs])];
+
+    const resultContent = document.getElementById('resultContent');
+    resultContent.innerHTML = `
+      <h3>Suitable Career Path (Skill Assessment): <span style="color:white;">${skillJob || "N/A"}</span></h3>
+      <p>Recommended Jobs:</p>
+      <ul>${combinedRecommended.map(job => `<li>${job}</li>`).join('')}</ul>
+    `;
+
+    // Show result, hide others
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('interest').style.display = 'none';
+    document.getElementById('assessment').style.display = 'none';
+  }
+</script>
+
+<style>
+  /* Simple style for selected interest */
+  .interest-item {
+    cursor: pointer;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    user-select: none;
+  }
+  .interest-item.selected {
+    background-color: #007bff;
+    color: white;
+  }
+</style>
+
+<!-- Ratings Section -->
+<div id="ratings" class="main-content">
+  <h2>Ratings Overview</h2>
+
+  <div class="profile-box" style="display: flex; gap: 30px; justify-content: center; margin-top: 20px;">
+    <div style="text-align: center;">
+      <p><strong>Skill Assessment</strong></p>
+      <div class="rating-circle" id="skillRating"></div>
+    </div>
+    <div style="text-align: center;">
+      <p><strong>Interest Rating</strong></p>
+      <div class="rating-circle" id="interestRating"></div>
+    </div>
+    <div style="text-align: center;">
+      <p><strong>Improvement Rating</strong></p>
+      <div class="rating-circle" id="improvementRating"></div>
+    </div>
+    <div style="text-align: center;">
+      <p><strong>Overall Rating</strong></p>
+      <div class="rating-circle" id="overallRating"></div>
+    </div>
+  </div>
+
+  <p id="noRatingsMessage" style="color: gray; font-style: italic; margin-top: 20px; display:none;">
+    Ratings will be shown once you’ve applied and worked in a job matched to your profile.
+  </p>
+
+  <!-- Form for real-time input -->
+  <form id="ratingForm" style="margin-top: 40px; max-width: 400px; margin-left:auto; margin-right:auto;">
+    <h3>Enter Your Scores</h3>
+    <div style="margin-bottom: 15px;">
+      <label>Skill Assessment Correct:</label><br />
+      <input type="number" id="skillCorrect" min="0" value="0" style="width: 100%;" />
+    </div>
+    <div style="margin-bottom: 15px;">
+      <label>Skill Assessment Total:</label><br />
+      <input type="number" id="skillTotal" min="1" value="10" style="width: 100%;" />
+    </div>
+    <div style="margin-bottom: 15px;">
+      <label>Interest Rating Correct:</label><br />
+      <input type="number" id="interestCorrect" min="0" value="0" style="width: 100%;" />
+    </div>
+    <div style="margin-bottom: 15px;">
+      <label>Interest Rating Total:</label><br />
+      <input type="number" id="interestTotal" min="1" value="10" style="width: 100%;" />
+    </div>
+    <button type="submit" style="padding: 10px 20px; background-color: #003300; color: white; border: none; cursor: pointer;">
+      Update Ratings
+    </button>
+  </form>
+</div>
+
+<style>
+  .rating-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: white;
+    border: 2px solid #003300;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #003300;
+    user-select: none;
+  }
+  input[type=number] {
+    font-size: 1rem;
+    padding: 6px 8px;
+  }
+</style>
+
+<script>
+  const ratingsData = {
+    skillAssessment: 0,
+    interestRating: 0,
+    improvementRating: 0,
+    overallRating: 0
+  };
+
+  function updateRatings() {
+    function displayRating(value) {
+      return value > 0 ? value + '%' : '';
+    }
+
+    document.getElementById('skillRating').textContent = displayRating(ratingsData.skillAssessment);
+    document.getElementById('interestRating').textContent = displayRating(ratingsData.interestRating);
+    document.getElementById('improvementRating').textContent = displayRating(ratingsData.improvementRating);
+    document.getElementById('overallRating').textContent = displayRating(ratingsData.overallRating);
+
+    const allEmpty = Object.values(ratingsData).every(r => r === 0);
+    document.getElementById('noRatingsMessage').style.display = allEmpty ? 'block' : 'none';
+  }
+
+  function onUserSubmit(skillCorrect, skillTotal, interestCorrect, interestTotal) {
+    ratingsData.skillAssessment = skillTotal > 0 ? Math.round((skillCorrect / skillTotal) * 100) : 0;
+    ratingsData.interestRating = interestTotal > 0 ? Math.round((interestCorrect / interestTotal) * 100) : 0;
+
+    // Keep zero for now
+    ratingsData.improvementRating = 0;
+    ratingsData.overallRating = 0;
+
+    updateRatings();
+  }
+
+  // Initial update
+  updateRatings();
+
+  // Form submit event
+  document.getElementById('ratingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const skillCorrect = parseInt(document.getElementById('skillCorrect').value) || 0;
+    const skillTotal = parseInt(document.getElementById('skillTotal').value) || 1;
+    const interestCorrect = parseInt(document.getElementById('interestCorrect').value) || 0;
+    const interestTotal = parseInt(document.getElementById('interestTotal').value) || 1;
+
+    // Validation: correct <= total
+    if (skillCorrect > skillTotal) {
+      alert('Skill Assessment Correct cannot be more than Total.');
+      return;
+    }
+    if (interestCorrect > interestTotal) {
+      alert('Interest Rating Correct cannot be more than Total.');
+      return;
+    }
+
+    onUserSubmit(skillCorrect, skillTotal, interestCorrect, interestTotal);
+  });
+</script>
+
+
+<!-- Notification Section -->
+<div id="notification" class="main-content">
+  <h2>Notifications</h2>
+  <p>No new notifications at the moment.</p>
+</div>
+
+<!-- Report a Problem Section -->
+<div id="problem" class="main-content">
+  <h2>Report a Problem</h2>
+  <form>
+    <label>Describe the issue:</label><br/>
+    <textarea rows="5" cols="50" placeholder="Type your issue here..."></textarea><br/><br/>
+    <button type="submit">Submit Report</button>
+  </form>
+</div>
+
+<!-- Feedback Section -->
+<div id="feedback" class="main-content">
+  <h2>Feedback</h2>
+  <p>We'd love to hear your feedback!</p>
+  <form>
+    <textarea rows="5" cols="50" placeholder="Leave your feedback..."></textarea><br/><br/>
+    <button type="submit">Send Feedback</button>
+  </form>
+</div>
+
+<!-- Settings Section -->
+<div id="settings" class="main-content">
+  <h2 id="settingsTitle">Settings</h2>
+  <p id="settingsDesc">Customize your CareerBuddy experience:</p>
+
+  <div class="profile-box">
+    <label><input type="checkbox" onclick="toggleDarkMode()" /> <span id="darkModeLabel">Enable Dark Mode</span></label><br/>
+    <label><input type="checkbox" /> <span id="notifLabel">Receive Notifications</span></label><br/>
+    <label><input type="checkbox" /> <span id="emailLabel">Enable Email Updates</span></label><br/>
+
+    <label for="languageSelect" id="languageLabel">Switch Language:</label>
+    <select id="languageSelect" style="margin-top: 10px;">
+      <option value="en">English</option>
+      <option value="tl">Tagalog</option>
+    </select>
+  </div>
+</div>
+<script>
+  const translations = {
+    en: {
+      dashboardTitle: "Dashboard",
+      welcomeMsg: "Welcome to CareerBuddy!",
+      logoutBtn: "Logout",
+      settingsTitle: "Settings",
+      settingsDesc: "Customize your CareerBuddy experience:",
+      darkModeLabel: "Enable Dark Mode",
+      notifLabel: "Receive Notifications",
+      emailLabel: "Enable Email Updates",
+      languageLabel: "Switch Language:"
+      // Add all other UI texts here...
+    },
+    tl: {
+      dashboardTitle: "Dashboard",
+      welcomeMsg: "Maligayang pagdating sa CareerBuddy!",
+      logoutBtn: "Mag-logout",
+      settingsTitle: "Mga Setting",
+      settingsDesc: "I-customize ang iyong CareerBuddy karanasan:",
+      darkModeLabel: "I-activate ang Dark Mode",
+      notifLabel: "Tumanggap ng Notipikasyon",
+      emailLabel: "I-activate ang Email Updates",
+      languageLabel: "Pumili ng Wika:"
+      // Add all other UI texts here...
+    }
+  };
+
+  function switchLanguage(lang) {
+    const t = translations[lang];
+    for (const key in t) {
+      const el = document.getElementById(key);
+      if (el) {
+        el.textContent = t[key];
+      }
+    }
+    localStorage.setItem('selectedLang', lang);
+  }
+
+  window.onload = () => {
+    const savedLang = localStorage.getItem('selectedLang') || 'en';
+    const langSelect = document.getElementById('languageSelect');
+    langSelect.value = savedLang;
+
+    langSelect.onchange = (e) => {
+      switchLanguage(e.target.value);
+    };
+
+    switchLanguage(savedLang);
+  };
+  
+</script>
+
+<!-- Logout Section -->
+<div id="logout" class="main-content">
+  <h2>Logging Out...</h2>
+  <p>Thank you for using CareerBuddy!</p>
+</div>
+
+<script>
+  // Add logout functionality
+  document.querySelector(".sidebar a:last-child").addEventListener("click", function() {
+    showContent('logout');
+    setTimeout(() => {
+      window.location.href = 'loading.html'; // or your login page
+    }, 1500);
+  });
+  
+
+</script>
+
+<!-- END OF ADDITION -->
+
+
+</body>
+</html>

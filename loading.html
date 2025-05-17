@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CareerBuddy - Loading</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box; 
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(to right, rgba(144, 225, 238, 0.63), rgba(144, 232, 238, 0.532)), url('https://wallpapercave.com/wp/wp3616244.jpg') no-repeat center center/cover;
+      font-family: Arial, sans-serif;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .loading-container {
+      text-align: center;
+      width: 90%;
+      max-width: 600px;
+    }
+
+    .logo {
+      width: 250px;
+      height: 250px;
+      margin-bottom: 30px;
+    }
+
+    .app-name {
+      font-size: 2.5rem;
+      color: #038eff;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+      margin-bottom: 40px;
+      font-weight: bold;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 35px; /* Final bar height (like real apps) */
+      background-color: #e0e0e0;
+      border-radius: 18px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    }
+
+    .progress-bar {
+      height: 100%;
+      background-color: #00747a;
+      width: 0%;
+      transition: width 0.1s linear;
+      border-radius: 18px;
+    }
+
+    .percentage {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: white;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="loading-container">
+    <img src="https://cdn.shortpixel.ai/client/q_lossless,ret_img,w_2735/https://www.bitext.com/wp-content/uploads/2019/01/bot-automation-234tdgf.png" alt="CareerBuddy Logo" class="logo" />
+    <div class="app-name">CareerBuddy</div>
+
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progressBar"></div>
+      <div class="percentage" id="percentage">0%</div>
+    </div>
+  </div>
+
+  <script>
+    let progress = 0;
+    let bar = document.getElementById('progressBar');
+    let percent = document.getElementById('percentage');
+
+    let loading = setInterval(() => {
+      if (progress >= 100) {
+        clearInterval(loading);
+        window.location.href = "index.html"; // Replace with your actual main page
+      } else {
+        progress++;
+        bar.style.width = progress + "%";
+        percent.textContent = progress + "%";
+      }
+    }, 50); // smooth and consistent loading
+  </script>
+
+</body>
+</html>

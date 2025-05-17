@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up - CareerBuddy</title>
+  
+  <!-- Google Fonts Link for Custom Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(rgba(144, 225, 238, 0.625), rgba(144, 222, 238, 0.833)), url('https://www.projectcubicle.com/wp-content/uploads/2024/02/business-migration-1024x577.jpg') no-repeat center center/cover;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .signup-box {
+      background: rgba(0, 95, 100, 0.6);
+      padding: 30px;
+      border-radius: 10px;
+      color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      width: 300px;
+      text-align: center;
+    }
+
+    .signup-box img {
+      width: 80px;
+      margin-bottom: 10px;
+    }
+
+    .signup-box h2 {
+      margin-bottom: 20px;
+    }
+
+    .signup-box input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .signup-box button {
+      width: 100%;
+      padding: 10px;
+      background: #00434d;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .signup-box a {
+      display: block;
+      margin-top: 15px;
+      color: white;
+      text-decoration: underline;
+    }
+
+    .app-name {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Poppins', sans-serif;
+      font-size: 3rem;
+      font-weight: 600;
+      color: rgb(3, 192, 255);
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Error message styling */
+    .error {
+      color: red;
+      font-size: 0.9rem;
+      display: none;
+      margin-top: -10px;
+    }
+
+    /* ------------------- DARK MODE STYLES ------------------- */
+    .dark-mode {
+      background: #121212 !important;
+      background-image: none !important;
+      color: white;
+    }
+
+    .dark-mode .signup-box {
+      background: rgba(30, 30, 30, 0.95);
+      color: #fff;
+    }
+
+    .dark-mode .signup-box input {
+      background: #2a2a2a;
+      color: white;
+    }
+
+    .dark-mode .signup-box button {
+      background: #1e6e8e;
+    }
+
+    .dark-mode .signup-box a {
+      color: #9effff;
+    }
+
+    .dark-mode .app-name {
+      color: #9efdff;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-name">CareerBuddy</div>
+
+  <div class="signup-box">
+    <img src="https://cdn.shortpixel.ai/client/q_lossless,ret_img,w_2735/https://www.bitext.com/wp-content/uploads/2019/01/bot-automation-234tdgf.png" alt="CareerBuddy Logo" />
+    <h2>Create Account</h2>
+    <form id="signupForm">
+      <input type="text" id="fullName" placeholder="Full Name" required />
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="address" id="address" placeholder="Address" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
+      
+      <!-- Error Messages -->
+      <div id="passwordError" class="error">Passwords must match and be at least 8 characters long.</div>
+      <div id="passwordStrengthError" class="error">Password must contain at least 1 letter and 1 number.</div>
+
+      <button type="submit">Sign Up</button>
+    </form>
+    <a href="sign_in.html">Already have an account? Sign In</a>
+  </div>
+
+  <script>
+    // Check and apply dark mode from localStorage
+    window.onload = function () {
+      const isDarkMode = localStorage.getItem('darkModeEnabled') === 'true';
+      if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+      }
+    };
+
+    // Function to check password strength
+    function checkPasswordStrength(password) {
+      const letter = /[a-zA-Z]/;
+      const number = /[0-9]/;
+      return password.length >= 8 && letter.test(password) && number.test(password);
+    }
+
+    // Sign-up logic
+    document.getElementById("signupForm").onsubmit = function(e) {
+      e.preventDefault();
+
+      var fullName = document.getElementById("fullName").value;
+      var email = document.getElementById("email").value;
+      var password = document.getElementById("password").value;
+      var confirmPassword = document.getElementById("confirmPassword").value;
+      var address = document.getElementById("address").value;
+
+      // Reset error messages
+      document.getElementById("passwordError").style.display = 'none';
+      document.getElementById("passwordStrengthError").style.display = 'none';
+
+      // Validate password strength
+      if (!checkPasswordStrength(password)) {
+        document.getElementById("passwordStrengthError").style.display = 'block';
+        return;
+      }
+
+      // Validate if passwords match
+      if (password !== confirmPassword) {
+        document.getElementById("passwordError").style.display = 'block';
+      } else {
+        // Store user details in localStorage
+        localStorage.setItem('userName', fullName);
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userPassword', password);
+        localStorage.setItem('userAddress', address);
+
+        // Redirect to welcome page
+        window.location.href = "careerbuddy_home.html";
+      }
+    }
+  </script>
+</body>
+</html>
